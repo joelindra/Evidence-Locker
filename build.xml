@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="EvidenceLocker" default="build" basedir=".">
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="lib.dir" value="lib"/>
+    <property name="dist.dir" value="${build.dir}/dist"/>
+    <property name="jar.name" value="EvidenceLocker.jar"/>
+
+    <path id="classpath">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+    </target>
+
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" 
+               classpathref="classpath" 
+               includeantruntime="false"
+               source="1.8" 
+               target="1.8"
+               encoding="UTF-8">
+            <compilerarg value="-Xlint:unchecked"/>
+        </javac>
+    </target>
+
+    <target name="copy-resources" depends="compile">
+        <copy todir="${classes.dir}">
+            <fileset dir="${src.dir}">
+                <include name="**/*.properties"/>
+                <include name="**/*.xml"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="jar" depends="compile, copy-resources">
+        <jar destfile="${dist.dir}/${jar.name}" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="burp.StartBurpExtender"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="build" depends="jar">
+        <echo message="Build completed: ${dist.dir}/${jar.name}"/>
+    </target>
+</project>
+
